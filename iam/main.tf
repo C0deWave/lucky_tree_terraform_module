@@ -23,6 +23,11 @@ resource "aws_iam_group_membership" "devops-user-list" {
   name  = aws_iam_group.devops-group.name
   users = [for value in var.user_list : value.userid if value.is_devops == true]
   group = aws_iam_group.devops-group.name
+  depends_on = [
+    aws_iam_user.module_iam_user,
+    aws_iam_group.devops-group,
+    aws_iam_group.develop-group,
+  ]
 }
 
 # is_devops가 false인 사용자를 developer 그룹에 추가한다.
@@ -30,6 +35,11 @@ resource "aws_iam_group_membership" "develop-user-list" {
   name  = aws_iam_group.develop-group.name
   users = [for value in var.user_list : value.userid if value.is_devops != true]
   group = aws_iam_group.develop-group.name
+  depends_on = [
+    aws_iam_user.module_iam_user,
+    aws_iam_group.devops-group,
+    aws_iam_group.develop-group,
+  ]
 }
 
 # devops 팀에 권한을 할당한다.
@@ -47,6 +57,9 @@ resource "aws_iam_group_policy" "devops_group_policy" {
       },
     ]
   })
+  depends_on = [
+    aws_iam_group.devops-group
+  ]
 }
 
 # developer 팀에 권한을 할당한다.
@@ -64,6 +77,9 @@ resource "aws_iam_group_policy" "developer_group_policy" {
       },
     ]
   })
+  depends_on = [
+    aws_iam_group.develop-group
+  ]
 }
 
 
@@ -79,13 +95,16 @@ resource "aws_iam_user_policy" "user-policy" {
   name = "${each.value.userid}_persional_policy"
   user = each.value.userid
   policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [ for key, Value in each.value.user_permission :
-        {
-          Action   = Value.Action
-          Effect   = Value.Effect
-          Resource = Value.Resource
-        }
-      ]
-    })
+    Version = "2012-10-17"
+    Statement = [for key, Value in each.value.user_permission :
+      {
+        Action   = Value.Action
+        Effect   = Value.Effect
+        Resource = Value.Resource
+      }
+    ]
+  })
+  depends_on = [
+    aws_iam_user.module_iam_user
+  ]
 }
