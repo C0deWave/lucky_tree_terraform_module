@@ -13,6 +13,7 @@ resource "aws_subnet" "module_vpc_subnet_public1" {
   vpc_id            = aws_vpc.module_vpc.id
   cidr_block        = var.public_subnet1_cidr
   availability_zone = data.aws_availability_zones.available.names[0]
+  map_public_ip_on_launch = true
   tags = {
     Name = "${var.vpc_name}_public1"
   }
@@ -21,6 +22,7 @@ resource "aws_subnet" "module_vpc_subnet_public2" {
   vpc_id            = aws_vpc.module_vpc.id
   cidr_block        = var.public_subnet2_cidr
   availability_zone = data.aws_availability_zones.available.names[1]
+  map_public_ip_on_launch = true
   tags = {
     Name = "${var.vpc_name}_public2"
   }
