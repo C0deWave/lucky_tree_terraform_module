@@ -6,13 +6,13 @@ resource "aws_s3_bucket" "b" {
   }
 }
 
-resource "aws_s3_object" "object" {
-  bucket = aws_s3_bucket.b.id
-  key    = "index.html"
-  source = "uploads/index.html"
-  content_type    = "text/html"
-  etag = filemd5("uploads/index.html")
-}
+# resource "aws_s3_object" "object" {
+#   bucket = aws_s3_bucket.b.id
+#   key    = "index.html"
+#   source = "uploads/index.html"
+#   content_type    = "text/html"
+#   etag = filemd5("uploads/index.html")
+# }
 
 resource "aws_s3_bucket_acl" "b_acl" {
   bucket = aws_s3_bucket.b.id
