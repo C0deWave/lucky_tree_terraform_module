@@ -45,7 +45,7 @@ resource "aws_s3_bucket_policy" "example" {
 }
 
 resource "aws_cloudfront_origin_access_control" "default" {
-  name                              = "aws-cloudfront-origin-access-control"
+  name                              = "${var.s3_bucket_name}-origin-access-control"
   description                       = "Example Policy"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
